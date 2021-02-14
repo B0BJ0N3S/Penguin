@@ -5,13 +5,9 @@ public class Penguin {
 
   private static final int MAX_WATER_LEVEL = 8;
   private static final int MAX_MOOD_LEVEL = 5;
-
-  private Homework test = new Homework("Bio Test");
-  private Homework quiz = new Homework("Math Quiz");
   
   private String name;
-  public List<Homework> homeworkList = List.of(test, quiz);
-  
+  public List<Homework> homeworkList;
   private WaterBar waterBar;
   private MoodBar moodBar;
 
@@ -22,6 +18,13 @@ public class Penguin {
     this.moodBar = new MoodBar();
   }
 
+  public Penguin() {
+	  this.name = new String();
+	  this.waterBar = new WaterBar();
+	  this.homeworkList = new ArrayList<>();
+	  this.moodBar = new MoodBar();
+  }
+  
   public String getName() {
     return this.name;
   }

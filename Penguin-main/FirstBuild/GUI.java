@@ -6,11 +6,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -28,10 +30,10 @@ public class GUI extends Application {
     private Penguin penguin;
     //Scenes
     Stage primaryStage;
-    Scene penguinScene, homeworkScene;
+    Scene penguinScene, homeworkScene, inputScene, startUpScene;
     //Game scene elements
     Label nameLabel, moodLabel, moodBarLabel, waterBarLabel;
-    ImageView penguinImage, background;
+    ImageView penguinImage, background, startUpImage;
     Button homeworkButton, waterButton, resetButton;
     Rectangle moodBar, moodBarBackground, waterBar, waterBarBackground;
 
@@ -41,16 +43,93 @@ public class GUI extends Application {
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         primaryStage.setResizable(false);
-        penguin = new Penguin("Pingu");
-
+        penguin = new Penguin();
+    	
         primaryStage.setTitle("Club Penguin!");
+        initializeStartUpScene();
+    	initializeInputScene();
         initializeHomeworkScene();
         initializeGameScene();
-        primaryStage.setScene(penguinScene);
+        primaryStage.setScene(startUpScene);
         primaryStage.show();
     }
 
+    //Start Up
+    private void initializeStartUpScene() {
+        StackPane root = new StackPane();
+        root.setPrefSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        
+        initializeBackground();
+        
+        startUpImage = new ImageView();
+        startUpImage.setFitHeight(200);
+        startUpImage.setFitWidth(200);
+        startUpImage.setPreserveRatio(true);
+        try {
+            InputStream stream = new FileInputStream("L:/Penguin-main/FirstBuild/Images/IMG_2518.PNG");
+            Image image = new Image(stream);
+            startUpImage.setImage(image);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+       
+        Button startBtn = new Button();
+        startBtn.setOnAction(e -> {
+        	primaryStage.setScene(inputScene);
+        });
+        startBtn.setTranslateY(-90);
+        startBtn.setMaxSize(200, 100);
+        startBtn.setGraphic(startUpImage);
+        
+        startUpImage = new ImageView();
+        startUpImage.setFitHeight(200);
+        startUpImage.setFitWidth(200);
+        startUpImage.setPreserveRatio(true);
+        try {
+            InputStream stream = new FileInputStream("L:/Penguin-main/FirstBuild/Images/IMG_2517.PNG");
+            Image image = new Image(stream);
+            startUpImage.setImage(image);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        Button exitBtn = new Button();
+        exitBtn.setOnAction(e -> {
+        	((Stage)(((Button)e.getSource()).getScene().getWindow())).close();      	
+        });
+        exitBtn.setTranslateY(90);
+        exitBtn.setMaxSize(200, 100);
+        exitBtn.setGraphic(startUpImage);
+        
+        root.getChildren().addAll(background, startBtn, exitBtn);
+        startUpScene = new Scene(root);
+    }
+    
 
+    private void initializeInputScene() {
+    	StackPane root = new StackPane();
+        root.setPrefSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+       
+        initializeBackground();
+        
+        Label msg = new Label("What is the name of your penguin?");
+        msg.setFont(new Font("Times", 20));
+        TextField b = new TextField();
+        Button bnt = new Button("Submit");
+        bnt.setOnAction(e -> {
+        	this.penguin.setName(b.getText());
+        	nameLabel.setText(penguin.getName());
+        	System.out.println("Welcome Penguin " + this.penguin.getName() + "!");
+        	
+        	primaryStage.setScene(penguinScene);
+        });
+        msg.setTranslateY(-40);
+        bnt.setTranslateY(50);
+        bnt.setMaxSize(100, 50);
+       
+        root.getChildren().addAll(background, b, msg, bnt);
+        inputScene = new Scene(root);
+    }
+    
     //Updates the penguin image based on mood
     private void updatePenguinImage()  {
         try {
